@@ -7,6 +7,7 @@ import shutil
 import tempfile
 import time
 
+import pygame
 import vlc
 
 from .alsa_config import parse_hw_device
@@ -21,10 +22,14 @@ class VLCPlayer:
         self._temp_directory = None
         self._vlc_instance = vlc.Instance()
         self._video_player = self._vlc_instance.media_player_new()
-        self._video_player.set_fullscreen(True)
         self._video_directory = "/home/timc/Videos/"
 
         self._load_config(config)
+
+        # set the player into pygame's window so that
+        # pygame still has control over key events
+        win_id = pygame.display.get_wm_info()['window']
+        self._video_player.set_xwindow(win_id)
 
 
     def __del__(self):
@@ -49,11 +54,10 @@ class VLCPlayer:
         media = self._vlc_instance.media_new(movie.target)
         self._video_player.set_media(media)
         self._video_player.play()
+
+        # wait until the video starts
         while not self._video_player.is_playing():
             time.sleep(0.1)
-        while self._video_player.is_playing():
-            time.sleep(0.05)
-
 
     def pause(self):
         self._video_player.pause()
@@ -66,7 +70,7 @@ class VLCPlayer:
 
     def is_playing(self):
         """Return true if the video player is running, false otherwise."""
-        self._video_player.is_playing()
+        return self._video_player.is_playing()
 
     def stop(self, block_timeout_sec=0):
         self._video_player.stop()
