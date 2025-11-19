@@ -69,8 +69,9 @@ class VLCPlayer:
         pass
 
     def is_playing(self):
-        """Return true if the video player is running, false otherwise."""
-        return self._video_player.is_playing()
+        """Return true if the video player is running or paused, false otherwise.
+        Becomes false automatically after video finishes."""
+        return self._video_player.is_playing() or self._video_player.get_state() == vlc.State.Paused
 
     def stop(self, block_timeout_sec=0):
         self._video_player.stop()
