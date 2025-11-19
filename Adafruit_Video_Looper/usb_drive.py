@@ -3,7 +3,7 @@
 # License: GNU GPLv2, see LICENSE.txt
 import glob
 
-from .usb_drive_mounter import USBDriveMounter
+# from .usb_drive_mounter import USBDriveMounter
 
 
 class USBDriveReader:
@@ -14,9 +14,9 @@ class USBDriveReader:
         them for reading videos.
         """
         self._load_config(config)
-        self._mounter = USBDriveMounter(root=self._mount_path,
-                                        readonly=self._readonly)
-        self._mounter.start_monitor()
+        # self._mounter = USBDriveMounter(root=self._mount_path,
+        #                                 readonly=self._readonly)
+        # self._mounter.start_monitor()
 
 
     def _load_config(self, config):
@@ -27,14 +27,15 @@ class USBDriveReader:
         """Return a list of paths to search for files. Will return a list of all
         mounted USB drives.
         """
-        self._mounter.mount_all()
+        # self._mounter.mount_all()
         return glob.glob(self._mount_path + '*')
 
     def is_changed(self):
         """Return true if the file search paths have changed, like when a new
         USB drive is inserted.
         """
-        return self._mounter.poll_changes()
+        # return self._mounter.poll_changes()
+        return False
 
     def idle_message(self):
         """Return a message to display when idle and no files are found."""

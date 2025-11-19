@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Error out if anything fails.
 set -e
@@ -10,39 +10,29 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 
-echo "Installing dependencies..."
+echo "Installing linux dependencies..."
 echo "=========================="
-apt update && apt -y install python3 python3-pip python3-pygame supervisor omxplayer ntfs-3g exfat-fuse
+apt update && apt -y install python3 python3-pip supervisor
 
-if [ "$*" != "no_hello_video" ]
-then
-	echo "Installing hello_video..."
-	echo "========================="
-	apt -y install git build-essential python3-dev
-	git clone https://github.com/adafruit/pi_hello_video
-	cd pi_hello_video
-	./rebuild.sh
-	cd hello_video
-	make install
-	cd ../..
-	rm -rf pi_hello_video
-else
-    echo "hello_video was not installed"
-    echo "=========================="
-fi
+echo "Making virtualenv ..."
+echo "=========================="
+python -m venv venvs/pi5_video_looper_venv
+
+
+echo "Installing python dependencies..."
+echo "=========================="
+source venvs/pi5_video_looper_venv/bin/activate
+pip install python-vlc
+pip install setuptools
+pip install pygame
 
 echo "Installing video_looper program..."
 echo "=================================="
 
-# change the directoy to the script location
+# change the directory to the script location
 cd "$(dirname "$0")"
 
-mkdir -p /mnt/usbdrive0 # This is very important if you put your system in readonly after
-mkdir -p /home/pi/video # create default video directory
-chown pi:pi /home/pi/video
-
-pip3 install setuptools
-python3 setup.py install --force
+python setup.py install --force
 
 cp ./assets/video_looper.ini /boot/video_looper.ini
 

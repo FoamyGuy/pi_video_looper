@@ -14,7 +14,7 @@ import pygame
 import json
 import threading
 from datetime import datetime
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 from .alsa_config import parse_hw_device
 from .model import Playlist, Movie
@@ -493,14 +493,14 @@ class VideoLooper:
             self._playbackStopped = False
     
     def _gpio_setup(self):
-        if self._pinMap == None:
-            return
-        GPIO.setmode(GPIO.BOARD)
-        for pin in self._pinMap:
-            GPIO.setup(int(pin), GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(int(pin), GPIO.FALLING, callback=self._handle_gpio_control,  bouncetime=200) 
-            self._print("pin {} action set to: {}".format(pin, self._pinMap[pin]))
-
+        # if self._pinMap == None:
+        #     return
+        # GPIO.setmode(GPIO.BOARD)
+        # for pin in self._pinMap:
+        #     GPIO.setup(int(pin), GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        #     GPIO.add_event_detect(int(pin), GPIO.FALLING, callback=self._handle_gpio_control,  bouncetime=200)
+        #     self._print("pin {} action set to: {}".format(pin, self._pinMap[pin]))
+        pass
         
     def run(self):
         """Main program loop.  Will never return!"""
@@ -593,8 +593,8 @@ class VideoLooper:
             self._player.stop()
 
         if self._pinMap:
-            GPIO.cleanup()
-
+            # GPIO.cleanup()
+            pass
 
     def signal_quit(self, signal, frame):
         """Shut down the program, meant to by called by signal handler."""
@@ -604,6 +604,7 @@ class VideoLooper:
 # Main entry point.
 if __name__ == '__main__':
     print('Starting Adafruit Video Looper.')
+    os.environ["DISPLAY"] = ':0.0'
     # Default config path to /boot.
     config_path = '/boot/video_looper.ini'
     # Override config path if provided as parameter.
